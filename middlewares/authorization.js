@@ -1,5 +1,6 @@
 const env = require("dotenv");
 const jwt = require("jsonwebtoken");
+const { responseHandler } = require("../utils/helpers");
 const { MESSAGES, PUBLIC_PATHS } = require("../utils/constants");
 env.config();
 
@@ -18,16 +19,18 @@ const verifyToken = (req, res, next) => {
         if (verified) {
           next();
         } else {
-          return res
-            .status(401)
-            .send({ message: MESSAGES.UNAUTHORIZATION_ERROR });
+          return responseHandler(res, 401, {
+            message: MESSAGES.UNAUTHORIZATION_ERROR,
+          });
         }
       } else {
-        res.status(401).send({ message: MESSAGES.UNAUTHORIZATION_ERROR });
+        return responseHandler(res, 401, {
+          message: MESSAGES.UNAUTHORIZATION_ERROR,
+        });
       }
     }
   } catch (err) {
-    res.status(401).send({ message: MESSAGES.ERROR_WHILE_AUTHORIZING });
+    responseHandler(res, 401, { message: MESSAGES.ERROR_WHILE_AUTHORIZING });
   }
 };
 
