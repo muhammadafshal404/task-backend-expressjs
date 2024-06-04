@@ -12,10 +12,10 @@ const {
   updateCategory,
 } = categoryController;
 
-router.post("/", categoryDataValidate, createCategory);
 router.get("/", getCategories);
-router.put("/:id", categoryDataValidate, updateCategory);
 router.get("/:id", getCategory);
 router.delete("/:id", deleteCategory);
+router.post("/", categoryDataValidate, createCategory);
+router.put("/:id", categoryDataValidate, updateCategory);
 
 module.exports = router;

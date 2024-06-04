@@ -1,7 +1,7 @@
-var nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 module.exports = (toUser, emailSubject, emailMessage) => {
   return new Promise((resolve, reject) => {
-    var transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: process.env.MAIL_SERVICE,
       auth: {
         user: process.env.MAIL_USER,
@@ -9,7 +9,7 @@ module.exports = (toUser, emailSubject, emailMessage) => {
       },
     });
 
-    var mailOptions = {
+    const mailOptions = {
       from: {
         name: process.env.MAIL_NAME,
         address: process.env.MAIL_USER,

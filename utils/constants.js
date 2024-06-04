@@ -25,6 +25,12 @@ module.exports = {
     UNAUTHORIZATION_ERROR: "Unauthorized",
     CATEGORY_NAME_REQUIRED: "Name is Required",
     NAME_SHOULD_BE_STRING: "Name should be String",
+    CAR_MODEL_IS_REQUIRED: "Model is Required",
+    CAR_COLOR_IS_REQUIRED: "Color is Required",
+    CAR_REG_NO_IS_REQUIRED: "Registration No. is Required",
+    CATEGORY_ID_IS_REQUIRED: "Category Id is Required",
+    SHOULD_BE_STRING: "Should be string",
+    ERROR_WHILE_AUTHORIZING: "Error while Authorizing",
   },
   PUBLIC_PATHS: ["/auth/login", "/auth/signup"],
 };

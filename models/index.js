@@ -26,8 +26,12 @@ const sequelizeInstance = new Sequelize(
 );
 const db = {};
 
+db.cars = require("./car.model")(sequelizeInstance, Sequelize);
 db.users = require("./user.model")(sequelizeInstance, Sequelize);
 db.categories = require("./category.model")(sequelizeInstance, Sequelize);
+
+db.categories.hasMany(db.cars, { foreignKey: "category_id" });
+db.cars.belongsTo(db.categories, { foreignKey: "category_id" });
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelizeInstance;

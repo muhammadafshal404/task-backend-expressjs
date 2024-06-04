@@ -1,5 +1,6 @@
-const { MESSAGES, SORT_ORDER } = require("../utils/constants");
+const { deleteCarOnCategoryDeletion } = require("./car");
 const { validationResult } = require("express-validator");
+const { MESSAGES, SORT_ORDER } = require("../utils/constants");
 
 const createCategory = async (req, res) => {
   try {
@@ -66,8 +67,10 @@ const deleteCategory = async (req, res) => {
   const transaction = await db.sequelize.transaction();
   try {
     const { id } = req?.params;
+
+    await deleteCarOnCategoryDeletion(id, transaction, db);
     await db.categories.destroy({ where: { id }, transaction });
-    // await this.carService.deleteCarOnCategoryDeletion(id, transaction);
+
     await transaction?.commit();
     res.status(200).send();
   } catch (err) {
@@ -92,7 +95,6 @@ const updateCategory = async (req, res) => {
       { name },
       { where: { id } }
     );
-    // await this.carService.deleteCarOnCategoryDeletion(id, transaction);
     res.status(200).send(updatedCategory);
   } catch (err) {
     res.status(500).send(MESSAGES.INTERNAL_SERVER_ERROR);

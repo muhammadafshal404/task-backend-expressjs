@@ -3,9 +3,9 @@ const env = require("dotenv");
 const db = require("./models");
 const express = require("express");
 const bodyParser = require("body-parser");
-const { authRoutes, categoryRoutes } = require("./routes");
-const injectModelMiddleware = require("./middlewares/injectModels");
 const { verifyToken } = require("./middlewares/authorization");
+const injectModelMiddleware = require("./middlewares/injectModels");
+const { authRoutes, categoryRoutes, carRoutes } = require("./routes");
 
 const app = express();
 
@@ -19,6 +19,7 @@ app.use(injectModelMiddleware);
 app.use(verifyToken);
 app.use("/auth", authRoutes);
 app.use("/category", categoryRoutes);
+app.use("/car", carRoutes);
 
 db.sequelize
   .sync()

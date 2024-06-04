@@ -27,7 +27,7 @@ const verifyToken = (req, res, next) => {
       }
     }
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    res.status(401).send({ message: MESSAGES.ERROR_WHILE_AUTHORIZING });
   }
 };
 
