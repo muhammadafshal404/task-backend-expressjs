@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const { sendEmail } = require("../utils/helpers");
+const { responseHandler } = require("../utils/helpers");
 const { validationResult } = require("express-validator");
 const { createToken } = require("../middlewares/authorization");
 const { MESSAGES, WELCOME_EMAIL } = require("../utils/constants");
@@ -10,7 +11,7 @@ const login = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return responseHandler(res, 400, {
         success: false,
         errors: errors.array(),
       });
@@ -23,12 +24,16 @@ const login = async (req, res) => {
     const validatePassword = bcrypt.compareSync(password, user?.password);
 
     if (validatePassword) {
-      return res.status(200).send({ access_token: await createToken(user) });
+      return responseHandler(res, 200, {
+        access_token: await createToken(user),
+      });
     } else {
-      res.status(401).send({ message: MESSAGES.INCORRECT_EMAIL_OR_PASSWORD });
+      return responseHandler(res, 401, {
+        message: MESSAGES.INCORRECT_EMAIL_OR_PASSWORD,
+      });
     }
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -36,7 +41,7 @@ const signup = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return responseHandler(res, 400, {
         success: false,
         errors: errors.array(),
       });
@@ -57,9 +62,9 @@ const signup = async (req, res) => {
       renderWelcomeEmail(`${process.env.FRONT_END}/login`, password)
     );
 
-    res.status(200).send({ message: MESSAGES.EMAIL_SENT });
+    return responseHandler(res, 200, { message: MESSAGES.EMAIL_SENT });
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
