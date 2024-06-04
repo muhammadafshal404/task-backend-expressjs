@@ -1,3 +1,4 @@
+const { responseHandler } = require("../utils/helpers");
 const { deleteCarOnCategoryDeletion } = require("./car");
 const { validationResult } = require("express-validator");
 const { MESSAGES, SORT_ORDER } = require("../utils/constants");
@@ -6,7 +7,7 @@ const createCategory = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return responseHandler(res, 400, {
         success: false,
         errors: errors.array(),
       });
@@ -15,9 +16,10 @@ const createCategory = async (req, res) => {
     const { name } = req?.body;
     const { db } = req;
     const category = await db.categories.create({ name });
-    res.status(201).send(category);
+
+    return responseHandler(res, 201, category);
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -40,9 +42,10 @@ const getCategories = async (req, res) => {
       find["offset"] = (pageNo - 1) * perPage;
     }
     const categories = await db.categories.findAndCountAll(find);
-    res.status(200).send(categories);
+
+    return responseHandler(res, 200, categories);
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -52,13 +55,14 @@ const getCategory = async (req, res) => {
     const { id } = req?.params;
     const category = await db.categories.findOne({
       where: { id },
-      //   include: {
-      //     model: CarModel,
-      //   },
+      include: {
+        model: db.cars,
+      },
     });
-    res.status(200).send(category);
+
+    return responseHandler(res, 200, category);
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -72,10 +76,11 @@ const deleteCategory = async (req, res) => {
     await db.categories.destroy({ where: { id }, transaction });
 
     await transaction?.commit();
-    res.status(200).send();
+
+    return responseHandler(res, 200);
   } catch (err) {
     await transaction?.rollback();
-    res.status(500).send(MESSAGES.INTERNAL_SERVER_ERROR);
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -83,7 +88,7 @@ const updateCategory = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return responseHandler(res, 400, {
         success: false,
         errors: errors.array(),
       });
@@ -95,9 +100,10 @@ const updateCategory = async (req, res) => {
       { name },
       { where: { id } }
     );
-    res.status(200).send(updatedCategory);
+
+    return responseHandler(res, 200, updatedCategory);
   } catch (err) {
-    res.status(500).send(MESSAGES.INTERNAL_SERVER_ERROR);
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
