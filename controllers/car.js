@@ -1,3 +1,4 @@
+const { responseHandler } = require("../utils/helpers");
 const { validationResult } = require("express-validator");
 const { MESSAGES, SORT_ORDER } = require("../utils/constants");
 
@@ -5,7 +6,7 @@ const createCar = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return responseHandler(res, 400, {
         success: false,
         errors: errors.array(),
       });
@@ -20,9 +21,9 @@ const createCar = async (req, res) => {
       category_id,
     });
 
-    res.status(201).send(car);
+    return responseHandler(res, 201, car);
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -53,9 +54,9 @@ const getCars = async (req, res) => {
       },
     });
 
-    res.status(200).send(cars);
+    return responseHandler(res, 200, cars);
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -71,9 +72,9 @@ const getCar = async (req, res) => {
       },
     });
 
-    res.status(200).send(car);
+    return responseHandler(res, 200, car);
   } catch (err) {
-    res.status(500).send({ message: MESSAGES.INTERNAL_SERVER_ERROR });
+    responseHandler(res, 500, { message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -85,9 +86,9 @@ const deleteCar = async (req, res) => {
 
     const deleted = await db.cars.destroy({ where: { id } });
 
-    res.status(200).send(`${deleted}`);
+    return responseHandler(res, 200, `${deleted}`);
   } catch (err) {
-    res.status(500).send(MESSAGES.INTERNAL_SERVER_ERROR);
+    responseHandler(res, 500, MESSAGES.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -95,7 +96,7 @@ const updateCar = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({
+      return responseHandler(res, 400, {
         success: false,
         errors: errors.array(),
       });
@@ -109,9 +110,9 @@ const updateCar = async (req, res) => {
       { where: { id } }
     );
 
-    res.status(200).send(updatedCar);
+    return responseHandler(res, 200, updatedCar);
   } catch (err) {
-    res.status(500).send(MESSAGES.INTERNAL_SERVER_ERROR);
+    responseHandler(res, 500, MESSAGES.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -121,9 +122,9 @@ const totalNumberofCars = async (req, res) => {
 
     const { count, rows } = await db.cars.findAndCountAll();
 
-    res.status(200).send(`${count}`);
+    return responseHandler(res, 200, `${count}`);
   } catch (err) {
-    res.status(500).send(MESSAGES.INTERNAL_SERVER_ERROR);
+    responseHandler(res, 500, MESSAGES.INTERNAL_SERVER_ERROR);
   }
 };
 
